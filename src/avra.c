@@ -102,6 +102,7 @@ static struct segment_info EEPROM_SEG;
 int
 main(int argc, const char *argv[])
 {
+	int show_title = False;
 	int show_usage = False;
 	struct prog_info *pi;
 	struct args *args;
@@ -114,8 +115,6 @@ main(int argc, const char *argv[])
 		printf("\n");
 	}
 #endif
-
-	printf(title, VERSION);
 
 	args = alloc_args(ARG_COUNT);
 	if (args) {
@@ -156,14 +155,21 @@ main(int argc, const char *argv[])
 						list_devices();            /* list all supported devices */
 					}
 				}
-			} else
+				else
+					show_title = True;
+			} else {
+				show_title = True;
 				show_usage = True;
+			}
 		}
 		free_args(args);
 	} else {
+		show_title = True;
 		show_usage = True;
 		printf("\n");
 	}
+	if (show_title)
+		printf(title, VERSION);
 	if (show_usage) {
 #ifdef DEFAULT_INCLUDE_PATH
 		printf(usage, DEFAULT_INCLUDE_PATH);
