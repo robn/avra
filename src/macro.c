@@ -144,8 +144,9 @@ read_macro(struct prog_info *pi, char *name)
 
 	loopok = True;
 	while (loopok) {
-		if (fgets_new(pi,pi->fi->buff, LINEBUFFER_LENGTH, pi->fi->fp)) {
-			pi->fi->line_number++;
+		int ncont = 0;
+		if (fgets_new(pi,pi->fi->buff, LINEBUFFER_LENGTH, pi->fi->fp, &ncont)) {
+			pi->fi->line_number += ncont + 1;
 			i = 0;
 			while (IS_HOR_SPACE(pi->fi->buff[i]) && !IS_END_OR_COMMENT(pi->fi->buff[i])) i++;
 			if (pi->fi->buff[i] == '.') {

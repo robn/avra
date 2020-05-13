@@ -45,10 +45,11 @@
 /* Special fgets. Like fgets, but with better check for CR, LF and FF and without the ending \n char */
 /* size must be >=2. No checks for s=NULL, size<2 or stream=NULL.  B.A. */
 char *
-fgets_new(struct prog_info *pi, char *s, int size, FILE *stream)
+fgets_new(struct prog_info *pi, char *s, int size, FILE *stream, int *ncont)
 {
 	int c;
 	char *ptr=s;
+	if (ncont) *ncont = 0;
 	do {
 		if ((c=fgetc(stream))==EOF || IS_ENDLINE(c)) 	// Terminate at chr$ 10,12,13,0 and EOF
 			break;
@@ -67,9 +68,9 @@ fgets_new(struct prog_info *pi, char *s, int size, FILE *stream)
 				c=fgetc(stream);
 				if (IS_ENDLINE(c))
 					c=fgetc(stream);
-
 				if (c == EOF)
 					break;
+				if (ncont) (*ncont)++;
 			}
 		}
 
@@ -158,8 +159,9 @@ parse_file(struct prog_info *pi, const char *filename)
 	}
 	loopok = True;
 	while (loopok && !fi->exit_file) {
-		if (fgets_new(pi,fi->buff, LINEBUFFER_LENGTH, fi->fp)) {
-			fi->line_number++;
+		int ncont = 0;
+		if (fgets_new(pi,fi->buff, LINEBUFFER_LENGTH, fi->fp, &ncont)) {
+			fi->line_number += ncont + 1;
 			pi->list_line = fi->buff;
 			ok = parse_line(pi, fi->buff);
 #if debug == 1

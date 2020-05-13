@@ -892,8 +892,9 @@ spool_conditional(struct prog_info *pi, int only_endif)
 	} else {
 		if ((pi->pass == PASS_2) && pi->list_line && pi->list_on)
 			fprintf(pi->list_file, "          %s\n", pi->list_line);
-		while (fgets_new(pi,pi->fi->buff, LINEBUFFER_LENGTH, pi->fi->fp)) {
-			pi->fi->line_number++;
+		int ncont = 0;
+		while (fgets_new(pi,pi->fi->buff, LINEBUFFER_LENGTH, pi->fi->fp, &ncont)) {
+			pi->fi->line_number += ncont + 1;
 			if (check_conditional(pi, pi->fi->buff, &current_depth,  &do_next, only_endif)) {
 				if (!do_next)
 					return (True);

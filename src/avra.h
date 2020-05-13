@@ -314,7 +314,7 @@ void free_orglist(struct prog_info *pi);
 int parse_file(struct prog_info *pi, const char *filename);
 int parse_line(struct prog_info *pi, char *line);
 char *get_next_token(char *scratch, int term);
-char *fgets_new(struct prog_info *pi, char *s, int size, FILE *stream);
+char *fgets_new(struct prog_info *pi, char *s, int size, FILE *stream, int *ncont);
 
 /* expr.c */
 int get_expr(struct prog_info *pi, char *data, int *value);
